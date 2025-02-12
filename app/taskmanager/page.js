@@ -6,23 +6,24 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-
+import { useSelector } from 'react-redux';
 const TodoList = () => {
   const teamMember = ['Rohan', 'Rupak', 'Mohan', 'Samir' , 'Sagun']
 
-
+  const name = useSelector((state)=> state.members.names)
+  const orgName = useSelector((state)=> state.organizationName.orgName)
+  
 
   const input = useRef();
   const [assignedTo, setAssignedTo] = useState([teamMember[0]]);   //to track which member is assign initially
   const [date, setDate] = useState(new Date());
-  const [todo, setTodo] = useState(()=> JSON.parse(localStorage.getItem('tasks')) || []); //get data from strorage 
+  const [todo, setTodo] = useState([]); //get data from strorage 
 
 
   const handleAddTask = () => {
     if (input.current.value) {
       const tasks = [...todo,{task: input.current.value, AssignedTo: assignedTo, deadline: date.toISOString()}] //convert date into string
       setTodo(tasks)
-      localStorage.setItem('tasks', JSON.stringify(tasks))
       input.current.value = "";
     }
   };
@@ -33,15 +34,13 @@ const TodoList = () => {
 
   const handleDeleteAll = () => {
     setTodo([]);
-    localStorage.removeItem('tasks')
   };
 
-  const deleteSingle = (id) => { //deleteing single and updating localstorage
+  const deleteSingle = (id) => { //deleteing single 
     const tasks = [...todo];
     tasks.splice(id, 1);
     setTodo(tasks);
 
-    localStorage.setItem('tasks', JSON.stringify(tasks))
 
   };
 
@@ -49,13 +48,12 @@ const TodoList = () => {
     const changeUser = event.target.value //changing that AssignedTo to that change user
     const tasked = [...todo]
     tasked[id].AssignedTo = changeUser
-    localStorage.setItem('tasks', JSON.stringify(tasked))
   }
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-800 mb-4 text-center">Task Manager</h1>
+        <h1 className="text-4xl font-bold text-gray-800 mb-4 text-center">{orgName}</h1>
         
         {/* Input Section */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
@@ -73,7 +71,7 @@ const TodoList = () => {
               <div className="relative">
                 <span className='text-gray-700'>Assigned To: </span>
                   <select onChange={()=> selectedWhomToAssign(event)} className="bg-gray-50 border border-gray-200 rounded-md px-3 py-1 focus:ring-2 focus:ring-blue-500 focus:border-none" >
-                    {teamMember.map((member, ids)=>(
+                    {name.map((member, ids)=>(
                       <option value={member} key={ids}>{member}</option>
                     ))}
                   </select>
@@ -145,7 +143,7 @@ const TodoList = () => {
                     defaultValue={task.AssignedTo}
                     onChange={()=> taskListDropDown(event, id)}
                   >
-                    {teamMember.map((name, idx) => (
+                    {name.map((name, idx) => (
                       <option value={name} key={idx}>
                         {name}
                       </option>
