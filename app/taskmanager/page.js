@@ -8,14 +8,13 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import { useSelector } from 'react-redux';
 const TodoList = () => {
-  const teamMember = ['Rohan', 'Rupak', 'Mohan', 'Samir' , 'Sagun']
 
   const name = useSelector((state)=> state.members.names)
   const orgName = useSelector((state)=> state.organizationName.orgName)
   
 
   const input = useRef();
-  const [assignedTo, setAssignedTo] = useState([teamMember[0]]);   //to track which member is assign initially
+  const [assignedTo, setAssignedTo] = useState([name[0]]);   //to track which member is assign initially
   const [date, setDate] = useState(new Date());
   const [todo, setTodo] = useState([]); //get data from strorage 
 
