@@ -24,10 +24,10 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-lime-50 to-lime-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-lime-50 to-lime-100 flex items-center justify-center p-4 font-serif">
       <div className="w-full max-w-md">
         {/* Main Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 transform transition-all hover:scale-[1.02]">
+        <div className="bg-white rounded-2xl shadow-xl p-8 transform transition-all ">
           {/* Header Section */}
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
