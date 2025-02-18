@@ -19,6 +19,7 @@ const GetMemberName = () => {
   const router = useRouter()
   const [teamNumber, setTeamNumber] = useState(1);
   const [memberNames, setMemberNames] = useState(Array(1).fill(""));
+  const [nameError, setNameError] = useState(false)
 
   const handleMemberNameChange = (index, value) => {
     const newNames = [...memberNames];
@@ -35,7 +36,13 @@ const GetMemberName = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevent default form submission
+    const checkForEmptyName = memberNames.every((member)=> member !== '')
 
+    if (!checkForEmptyName) {
+      setNameError(true)
+      return
+    }
+    setNameError(false)
 		dispatch(addMemberName(memberNames))
 
     router.push('/taskmanager')
@@ -69,7 +76,11 @@ const GetMemberName = () => {
             </div>
 
             <div className="space-y-3">
-              <Label className='text-xl'>Team Members</Label>
+              <div className="flex flex-col">
+                <Label className='text-xl'>Team Members</Label>
+                {nameError && <span className="text-red-500">Every Name Filled Has To Be Filled</span>}
+
+              </div>
               {memberNames.map((name, index) => (
                 <div key={index} className="flex items-center space-x-2">
                   <div className="flex-none w-8 h-8 flex items-center justify-center bg-green-200 rounded-full text-gray-800 font-semibold">

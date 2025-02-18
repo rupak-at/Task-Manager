@@ -3,7 +3,7 @@ import { getOrgName } from "@/lib/features/organizationName/orgNameSlice";
 import { AlertCircle, ClipboardList } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Home = () => {
   const getOrganizationName = useRef();
@@ -11,8 +11,13 @@ const Home = () => {
   const [error, setError] = useState('')
   const [isValid, setIsValid] = useState(false)
   const router = useRouter();
+  const existedOrgName = useSelector((state) => state.organizationName.orgName)
 
   const getOrgNameFromUser = () => {
+    if (existedOrgName){
+      router.push('/taskmanager')
+      return
+    }
     if (getOrganizationName.current.value.trim() !== "") {
       const name = getOrganizationName.current.value;
       dispatch(getOrgName(name));
