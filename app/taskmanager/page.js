@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { Trash2, Plus, User, CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
+import { format, isValid, parseISO } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -10,67 +10,61 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { useSelector } from "react-redux";
-import { v4 as uuidv4 } from 'uuid';
-
+import { useDispatch, useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
+import { addTask, changedAssignedTo, deleteAll, deleteSingle } from "@/lib/features/task/taskSlice";
 
 const TodoList = () => {
   const name = useSelector((state) => state.members.names);
   const orgName = useSelector((state) => state.organizationName.orgName);
+  const tasks = useSelector((state)=> state.task.task)
+  const dispatch = useDispatch()
 
   const input = useRef();
   const [assignedTo, setAssignedTo] = useState(name[0]); //to track which member is assign initially
   const [date, setDate] = useState(new Date());
-  const [todo, setTodo] = useState(JSON.parse(localStorage.getItem('tasks')) || []); //get data from strorage
 
-    const handleAddTask = () => {
-      if (input.current.value) {
-        const tasks = [
-          ...todo,
-          {
-            id: uuidv4(),
-            task: input.current.value,
-            AssignedTo: assignedTo.toString(),
-            deadline: date.toISOString(),
-          },
-        ]; //convert date into string
-        setTodo(tasks);
-        localStorage.setItem('tasks', JSON.stringify(tasks))
-        input.current.value = "";
+  const handleAddTask = () => {
+    if (input.current.value) {
+
+      const addingTask = {
+        id:uuidv4(),
+        task: input.current.value,
+        assignedTo: assignedTo,
+        deadline: date.toISOString()
       }
-    };
-    const selectedWhomToAssign = (event) => {
-      const userChanged = event.target.value; //tracking what is selected in dropdown
-      setAssignedTo(userChanged);
-    };
+      dispatch(addTask(addingTask))
+      input.current.value = "";
+    }
+  };
+  const selectedWhomToAssign = (event) => {
+    const userChanged = event.target.value; //tracking what is selected in dropdown
+    setAssignedTo(userChanged);
+  };
+
+  const handleDeleteAll = () => {
+
+    dispatch(deleteAll())
+  };
+
+  const handleDeleteSingle = (id) => {
   
-    const handleDeleteAll = () => {
-      setTodo([]);
-      localStorage.removeItem('tasks')
-    };
-  
-    const deleteSingle = (id) => {
-      //deleteing single
-      const updatedTask = todo.filter((task)=> task.id !== id)
-      setTodo(updatedTask)
-      localStorage.setItem('tasks', JSON.stringify(updatedTask))
-    };
-  
-    const taskListDropDown = (event, id) => {
-      //in task displaying ui tracking user changed and
-      console.log(event.target.value);
-      const changeUser = event.target.value; //changing that AssignedTo to that change user
-      const tasks = todo.map(task => { // Use map to update
-        if (task.id === id) {
-          return { ...task, AssignedTo: changeUser };
-        }
-        return task;
-      });
-      setTodo(tasks);
-      localStorage.setItem('tasks', JSON.stringify(tasks));
-    };
-    
-  
+    dispatch(deleteSingle(id))
+  };
+
+  const taskListDropDown = (event, id) => {
+
+    dispatch(changedAssignedTo([id, event.target.value]))
+  };
+
+  const formattedDate = (dateString)=>{
+    if (!dateString) return 'No deadline'
+    const date = parseISO(dateString)
+    if(isValid(date)){
+      return format(date, 'PPP')
+    }
+    return 'Invalid Date'
+  }
 
   return (
     <div className="min-h-screen p-8 font-serif">
@@ -153,7 +147,7 @@ const TodoList = () => {
 
         {/* Tasks List */}
         <div className="space-y-4">
-          {todo.map((task) => (
+          {tasks.map((task) => (
             <div
               key={task.id}
               className="bg-white rounded-lg shadow-sm p-4 flex items-center justify-between gap-4 hover:shadow-md transition duration-200"
@@ -162,7 +156,8 @@ const TodoList = () => {
                 <p className="text-gray-800 font-bold">{task.task}</p>
                 <p className="text-sm text-gray-500 flex items-center gap-2">
                   <CalendarIcon size={16} />
-                  {format(new Date(task.deadline), "PPP")}
+                  {/* {format(new Date(task.deadline), "PPP")} */}
+                  {formattedDate(task.deadline)}
                 </p>
               </div>
               <div className="flex items-center gap-4">
@@ -170,7 +165,11 @@ const TodoList = () => {
                   <User size={20} className="text-gray-500" />
                   <select
                     className="bg-gray-50 border border-green-400 rounded-md px-3 py-1 focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none"
-                    defaultValue={Array.isArray(task.AssignedTo) ? task.AssignedTo[0] : task.AssignedTo}
+                    defaultValue={
+                      Array.isArray(task.assignedTo)
+                        ? task.assignedTo[0]
+                        : task.assignedTo
+                    }
                     onChange={() => taskListDropDown(event, task.id)}
                   >
                     {name.map((name, idx) => (
@@ -181,7 +180,7 @@ const TodoList = () => {
                   </select>
                 </div>
                 <button
-                  onClick={() => deleteSingle(task.id)}
+                  onClick={() => handleDeleteSingle(task.id)}
                   className="text-red-500 hover:text-red-600 transition duration-200"
                 >
                   <Trash2 size={20} />

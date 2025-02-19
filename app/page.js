@@ -68,7 +68,7 @@ const Home = () => {
               onClick={getOrgNameFromUser}
               className="w-full px-6 py-3 bg-lime-500 hover:bg-lime-600 text-white font-semibold rounded-lg transition-all duration-200 ease-in-out shadow-md hover:shadow-lg flex items-center justify-center gap-2"
             >
-              Go to Dashboard
+              {existedOrgName ? <span>Go To DashBoard</span> : <span>Continue</span>}
             </button>
           </div>
 
