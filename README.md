@@ -34,4 +34,4 @@ This project is a frontend application for a simple task manager, built using Re
 * tailwindcss (for styling)
 * Next js framework
 
-## More to IMPROVE
+
