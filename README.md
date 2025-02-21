@@ -33,3 +33,5 @@ This project is a frontend application for a simple task manager, built using Re
 * Redux Toolkit (for state management)
 * tailwindcss (for styling)
 * Next js framework
+
+
