@@ -39,6 +39,11 @@ const ListingTask = () => {
     );
   }, [searchTerm, taskDetails]);
 
+  const handleUpdateTask  = (id) => {
+    console.log(id);
+    router.push(`/updatetask?id=${id}`)
+  }
+
   return (
     <div className="w-screen min-h-screen flex flex-col items-center font-serif bg-gray-100 p-6">
       {/* Title */}
@@ -79,20 +84,7 @@ const ListingTask = () => {
                   {/* Assign Member Dropdown */}
                   <div className="flex items-center gap-2">
                     <User size={26} className="text-green-400" />
-                    <select
-                      className="border border-green-500 rounded-3xl w-28 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 bg-white text-gray-700 shadow-sm"
-                      name="members"
-                      defaultValue={task.assignedTo}
-                      onChange={(e) =>
-                        handleChangeAssignTo(e.target.value, task.id)
-                      }
-                    >
-                      {teamMembers.map((member, id) => (
-                        <option value={member} key={id}>
-                          {member}
-                        </option>
-                      ))}
-                    </select>
+                    <p className="text-lg border rounded-xl border-green-500 px-2 text-emerald-700">{task.assignedTo}</p>
                   </div>
 
                   {/* Delete Button */}
@@ -105,7 +97,7 @@ const ListingTask = () => {
                   {/* Update Button */}
                   <button
                     className="p-2 rounded-lg text-blue-500 hover:text-blue-800 transition-all duration-200"
-                    onClick={() => handleDeletion(task.id)}
+                    onClick={() => handleUpdateTask(task.id)}
                   >
                     <SquarePlus size={25} />
                   </button>

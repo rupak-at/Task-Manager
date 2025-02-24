@@ -43,6 +43,7 @@ const GetMemberName = () => {
       return
     }
     setNameError(false)
+    console.log(memberNames);
 		dispatch(addMemberName(memberNames))
 
     router.push('/taskmanager')

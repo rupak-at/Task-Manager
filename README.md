@@ -2,10 +2,10 @@
 
 This project is a frontend application for a simple task manager, built using React. It allows users to manage tasks for team members, with data persistence through local storage.
 
-## ScreenShots
+<!-- ## ScreenShots
 ![Screenshot 1](./public/screenshots/first.png)
 ![Screenshot 2](./public/screenshots/second.png)
-![Screenshot 3](./public/screenshots/third.png)
+![Screenshot 3](./public/screenshots/third.png) -->
 
 
 ## Features
